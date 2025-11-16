@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:weatherapp/core/constants/app_images.dart';
 import 'package:weatherapp/core/extensions/spacing_extensions.dart';
 import 'package:weatherapp/core/theme/app_colors.dart';
 import 'package:weatherapp/features/dashboard/domain/entities/weather_overview.dart';
 import 'package:weatherapp/features/dashboard/presentation/widgets/metric.dart';
+import 'package:weatherapp/core/utils/weather_icon_mapper.dart';
 
 class WeatherOverviewCard extends StatelessWidget {
   final WeatherOverview data;
@@ -18,6 +18,8 @@ class WeatherOverviewCard extends StatelessWidget {
       end: Alignment.bottomRight,
       colors: [AppColors.gradientStart, AppColors.gradientEnd],
     );
+
+    final iconPath = WeatherIconMapper.fromCondition(data.condition, weatherCode: data.code);
 
     return Container(
       decoration: BoxDecoration(
@@ -69,7 +71,7 @@ class WeatherOverviewCard extends StatelessWidget {
                 height: 89.w,
                 child: FittedBox(
                   fit: BoxFit.fill,
-                  child: Image.asset(AppImages.splashImage),
+                  child: Image.asset(iconPath),
                 ),
               ),
             ],

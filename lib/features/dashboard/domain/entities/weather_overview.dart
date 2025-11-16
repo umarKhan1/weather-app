@@ -7,6 +7,7 @@ class WeatherOverview extends Equatable {
   final double rainChancePercent;
   final double uvIndex;
   final double windSpeedMph;
+  final int? code; // OpenWeather condition code (e.g. 501 rain)
 
   const WeatherOverview({
     required this.condition,
@@ -15,6 +16,7 @@ class WeatherOverview extends Equatable {
     required this.rainChancePercent,
     required this.uvIndex,
     required this.windSpeedMph,
+    this.code,
   });
 
   @override
@@ -25,5 +27,6 @@ class WeatherOverview extends Equatable {
         rainChancePercent,
         uvIndex,
         windSpeedMph,
+        code,
       ];
 }

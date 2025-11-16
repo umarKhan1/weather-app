@@ -8,6 +8,7 @@ class WeatherOverviewModel extends WeatherOverview {
     required super.rainChancePercent,
     required super.uvIndex,
     required super.windSpeedMph,
+    super.code,
   });
 
   factory WeatherOverviewModel.fromJson(Map<String, dynamic> json) => WeatherOverviewModel(
@@ -17,6 +18,7 @@ class WeatherOverviewModel extends WeatherOverview {
         rainChancePercent: (json['rainChancePercent'] as num).toDouble(),
         uvIndex: (json['uvIndex'] as num).toDouble(),
         windSpeedMph: (json['windSpeedMph'] as num).toDouble(),
+        code: json['code'] as int?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -26,5 +28,6 @@ class WeatherOverviewModel extends WeatherOverview {
         'rainChancePercent': rainChancePercent,
         'uvIndex': uvIndex,
         'windSpeedMph': windSpeedMph,
+        'code': code,
       };
 }

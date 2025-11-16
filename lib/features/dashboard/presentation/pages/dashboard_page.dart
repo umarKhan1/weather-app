@@ -8,6 +8,7 @@ import 'package:weatherapp/features/dashboard/presentation/cubit/dashboard_state
 import 'package:weatherapp/features/dashboard/presentation/widgets/news_card.dart';
 import 'package:weatherapp/features/dashboard/presentation/widgets/weather_overview_card.dart';
 import 'package:weatherapp/features/dashboard/presentation/widgets/weather_forecast_card.dart';
+import 'package:weatherapp/features/dashboard/presentation/widgets/dashboard_shimmer.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -45,11 +46,22 @@ class DashboardPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               children: [
                 if (state.status == DashboardStatus.loading)
-                  const Center(child: CircularProgressIndicator()),
+                  const DashboardShimmer(),
                 if (state.status == DashboardStatus.failure)
                   Text(state.error ?? 'Error', style: theme.textTheme.bodyMedium),
                 if (state.overview != null) WeatherOverviewCard(data: state.overview!),
-           
+                16.vGap,
+                if (state.forecast.isNotEmpty)
+                  WeatherForecastCard(
+                    subtitle: state.overview?.condition ?? 'Forecast',
+                    title: _formatForecastTitle(state),
+                    items: state.forecast.take(6).map((e) => HourlyForecast(
+                          time: _formatHour(e.time),
+                          condition: e.condition,
+                          temperatureF: e.temperatureF,
+                        )).toList(),
+                    onFilterTap: () {},
+                  ),
                 24.vGap,
                 Text(
                   'News',
@@ -59,25 +71,44 @@ class DashboardPage extends StatelessWidget {
                 ),
                 12.vGap,
                 for (final item in state.news) NewsCard(item: item),
-                   16.vGap,
-                WeatherForecastCard(
-                  subtitle: state.overview?.condition ?? 'Partly Cloudy',
-                  title: 'August, 10th 2020',
-                  items: const [
-                    HourlyForecast(time: '10 AM', condition: 'Sunny', temperatureF: 71),
-                    HourlyForecast(time: '11 AM', condition: 'Partly Cloudy', temperatureF: 73),
-                    HourlyForecast(time: '12 PM', condition: 'Cloudy', temperatureF: 74),
-                    HourlyForecast(time: '1 PM', condition: 'Rain', temperatureF: 72),
-                    HourlyForecast(time: '2 PM', condition: 'Sunny', temperatureF: 75),
-                    HourlyForecast(time: '3 PM', condition: 'Partly Cloudy', temperatureF: 76),
-                  ],
-                  onFilterTap: () {},
-                ),
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  String _formatHour(DateTime dt) {
+    final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final ampm = dt.hour < 12 ? 'AM' : 'PM';
+    return '$h $ampm';
+  }
+
+  String _formatForecastTitle(DashboardState state) {
+    final now = state.forecast.first.time;
+    // Example: August, 10th 2020
+    final monthNames = [
+      'January','February','March','April','May','June','July','August','September','October','November','December'
+    ];
+    final month = monthNames[now.month - 1];
+    final day = now.day;
+    final year = now.year;
+    final suffix = _daySuffix(day);
+    return '$month, $day$suffix $year';
+  }
+
+  String _daySuffix(int day) {
+    if (day >= 11 && day <= 13) return 'th';
+    switch (day % 10) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
   }
 }

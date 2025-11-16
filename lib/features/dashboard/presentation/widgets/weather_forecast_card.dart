@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:weatherapp/core/constants/app_images.dart';
 import 'package:weatherapp/core/extensions/spacing_extensions.dart';
+import 'package:weatherapp/core/utils/weather_icon_mapper.dart';
 
 class HourlyForecast {
   final String time; // e.g. "10 AM"
@@ -89,7 +90,7 @@ class WeatherForecastCard extends StatelessWidget {
               separatorBuilder: (_, __) => SizedBox(width: 14.w),
               itemBuilder: (context, index) {
                 final item = items[index];
-                final icon = _iconForCondition(item.condition);
+                final icon = WeatherIconMapper.fromCondition(item.condition);
                 return _ForecastTile(
                   time: item.time,
                   iconPath: icon,
@@ -101,16 +102,6 @@ class WeatherForecastCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _iconForCondition(String c) {
-    final s = c.toLowerCase();
-    if (s.contains('rain')) return AppImages.rain;
-    if (s.contains('part') && s.contains('cloud')) return AppImages.partialyCloudy;
-    if (s.contains('cloud')) return AppImages.cloudy;
-    if (s.contains('sun')) return AppImages.sunny;
-    // Fallback to a safe existing asset
-    return AppImages.sunny;
   }
 }
 
