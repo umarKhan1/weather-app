@@ -11,6 +11,13 @@ import 'package:weatherapp/core/storage/prefs.dart';
 import 'package:weatherapp/core/network/dio_client.dart';
 import 'package:weatherapp/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
 import 'package:weatherapp/features/dashboard/domain/usecases/get_weather_forecast.dart';
+import 'package:weatherapp/features/locations/data/datasources/location_remote_datasource.dart';
+import 'package:weatherapp/features/locations/data/repositories/location_repository_impl.dart';
+import 'package:weatherapp/features/locations/domain/repositories/location_repository.dart';
+import 'package:weatherapp/features/locations/domain/usecases/save_location_selection.dart';
+import 'package:weatherapp/features/locations/domain/usecases/search_locations.dart';
+import 'package:weatherapp/features/locations/presentation/cubit/saved_locations_cubit.dart';
+import 'package:weatherapp/features/locations/presentation/cubit/location_search_cubit.dart';
 
 class AppProviders {
   const AppProviders._();
@@ -43,6 +50,19 @@ class AppProviders {
         RepositoryProvider<LocationService>(
           create: (_) => const LocationService(),
         ),
+        // Locations feature: datasource, repo, usecases
+        RepositoryProvider<LocationRemoteDataSource>(
+          create: (_) => LocationRemoteDataSource(),
+        ),
+        RepositoryProvider<LocationRepository>(
+          create: (ctx) => LocationRepositoryImpl(ctx.read<LocationRemoteDataSource>()),
+        ),
+        RepositoryProvider<SearchLocations>(
+          create: (ctx) => SearchLocations(ctx.read<LocationRepository>()),
+        ),
+        RepositoryProvider<SaveLocationSelection>(
+          create: (ctx) => SaveLocationSelection(ctx.read<LocationRepository>()),
+        ),
       ];
 
   static List<BlocProvider> blocProviders() => [
@@ -59,7 +79,19 @@ class AppProviders {
             },
           )..load(),
         ),
+        BlocProvider<SavedLocationsCubit>(
+          create: (ctx) => SavedLocationsCubit(ctx.read<LocationRepository>())..load(),
+        ),
       ];
+
+  // Scoped provider for Add Location feature
+  static Widget withLocationSearch({required Widget child}) => BlocProvider<LocationSearchCubit>(
+        create: (ctx) => LocationSearchCubit(
+          ctx.read<SearchLocations>(),
+          ctx.read<SaveLocationSelection>(),
+        ),
+        child: child,
+      );
 
   static Widget withProviders({required Widget child}) {
     return MultiRepositoryProvider(

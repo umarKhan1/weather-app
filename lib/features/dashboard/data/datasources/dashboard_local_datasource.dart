@@ -1,47 +1,35 @@
-import 'package:weatherapp/core/constants/app_images.dart';
-import 'package:weatherapp/core/storage/prefs.dart';
-import 'package:weatherapp/features/dashboard/data/models/news_item_model.dart';
-import 'package:weatherapp/features/dashboard/data/models/weather_overview_model.dart';
+import 'package:weatherapp/features/dashboard/domain/entities/news_item.dart';
+import 'package:weatherapp/features/dashboard/domain/entities/weather_overview.dart';
+import 'package:weatherapp/features/dashboard/domain/entities/forecast_entry.dart';
 
 abstract class DashboardLocalDataSource {
-  Future<WeatherOverviewModel> getCachedOverview();
-  Future<List<NewsItemModel>> getCachedNews();
+  Future<WeatherOverview?> getCachedOverview();
+  Future<List<NewsItem>> getCachedNews();
+  Future<List<ForecastEntry>> getCachedForecast();
 }
 
 class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
-  DashboardLocalDataSourceImpl();
+  @override
+  Future<WeatherOverview?> getCachedOverview() async => null;
 
   @override
-  Future<WeatherOverviewModel> getCachedOverview() async {
-    // Deprecated in favor of remote API; kept for reference/tests.
-    final _ = await AppPrefs.readLatLon();
-    return const WeatherOverviewModel(
-      condition: '—',
-      location: '—',
-      temperatureF: 0,
-      rainChancePercent: 0,
-      uvIndex: 0,
-      windSpeedMph: 0,
-    );
-  }
+  Future<List<NewsItem>> getCachedNews() async => [
+        NewsItem(
+          id: 'n1',
+            title: 'Storm systems move across the region this week',
+            source: 'Daily Forecast',
+            publishedAt: DateTime.now().subtract(const Duration(minutes: 12)),
+            imagePath: 'assets/images/rain.png',
+          ),
+        NewsItem(
+          id: 'n2',
+          title: 'Here\'s what is happening in weather today',
+          source: 'Weather Desk',
+          publishedAt: DateTime.now().subtract(const Duration(hours: 2)),
+          imagePath: 'assets/images/partlycloudy.png',
+        ),
+      ];
 
   @override
-  Future<List<NewsItemModel>> getCachedNews() async {
-    return [
-      NewsItemModel(
-        id: '1',
-        title: "Here's what to expect from Tuesday weather forecast",
-        source: 'WC Channel',
-        publishedAt: DateTime.now().subtract(const Duration(minutes: 14)),
-        imagePath: AppImages.splashImage,
-      ),
-      NewsItemModel(
-        id: '2',
-        title: 'Rain approaching in the evening hours',
-        source: 'Daily Weather',
-        publishedAt: DateTime.now().subtract(const Duration(hours: 1)),
-        imagePath: AppImages.splashImage,
-      ),
-    ];
-  }
+  Future<List<ForecastEntry>> getCachedForecast() async => const [];
 }
