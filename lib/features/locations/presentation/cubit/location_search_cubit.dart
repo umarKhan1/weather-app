@@ -26,9 +26,9 @@ class LocationSearchCubit extends Cubit<LocationSearchState> {
       emit(state.copyWith(loading: true));
       try {
         final results = await _search(q);
-        emit(state.copyWith(results: results, loading: false));
+        emit(state.copyWith(results: results, loading: false, error: null));
       } catch (e) {
-        emit(state.copyWith(error: 'Search failed', loading: false));
+        emit(state.copyWith(error: e.toString(), loading: false));
       }
     });
   }

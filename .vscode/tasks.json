@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "remove-weather-detail",
+			"command": "rm -f /Users/muhammadomar/Documents/weatherapp/lib/features/dashboard/presentation/pages/weather_detail_page.dart /Users/muhammadomar/Documents/weatherapp/lib/features/dashboard/presentation/cubit/weather_detail_cubit.dart && rm -rf /Users/muhammadomar/Documents/weatherapp/lib/features/dashboard/presentation/widgets/weather_detail",
+			"args": [],
+			"group": "build",
+			"isBackground": false
+		}
+	]
+}

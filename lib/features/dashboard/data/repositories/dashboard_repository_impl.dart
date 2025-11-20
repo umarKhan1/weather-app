@@ -1,9 +1,9 @@
 import 'package:weatherapp/features/dashboard/data/datasources/dashboard_local_datasource.dart';
 import 'package:weatherapp/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
+import 'package:weatherapp/features/dashboard/domain/entities/forecast_entry.dart';
 import 'package:weatherapp/features/dashboard/domain/entities/news_item.dart';
 import 'package:weatherapp/features/dashboard/domain/entities/weather_overview.dart';
 import 'package:weatherapp/features/dashboard/domain/repositories/dashboard_repository.dart';
-import 'package:weatherapp/features/dashboard/domain/entities/forecast_entry.dart';
 
 class DashboardRepositoryImpl implements DashboardRepository {
   final DashboardLocalDataSource local;

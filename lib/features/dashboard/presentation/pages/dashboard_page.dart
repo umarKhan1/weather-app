@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:weatherapp/core/constants/app_images.dart';
 import 'package:weatherapp/core/extensions/spacing_extensions.dart';
+import 'package:weatherapp/core/routing/app_router.dart';
 import 'package:weatherapp/core/theme/app_colors.dart';
 import 'package:weatherapp/features/dashboard/presentation/cubit/dashboard_cubit.dart';
 import 'package:weatherapp/features/dashboard/presentation/cubit/dashboard_state.dart';
-import 'package:weatherapp/features/dashboard/presentation/widgets/news_card.dart';
-import 'package:weatherapp/features/dashboard/presentation/widgets/weather_overview_card.dart';
-import 'package:weatherapp/features/dashboard/presentation/widgets/weather_forecast_card.dart';
 import 'package:weatherapp/features/dashboard/presentation/widgets/dashboard_shimmer.dart';
 import 'package:weatherapp/features/dashboard/presentation/widgets/locations_menu.dart';
-import 'package:weatherapp/core/routing/app_router.dart';
+import 'package:weatherapp/features/dashboard/presentation/widgets/news_card.dart';
+import 'package:weatherapp/features/dashboard/presentation/widgets/weather_forecast_card.dart';
+import 'package:weatherapp/features/dashboard/presentation/widgets/weather_overview_card.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -75,8 +75,9 @@ class _MainDashboardBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F5FA),
+      backgroundColor: const Color(0xffE5E5E5),
       appBar: AppBar(
+        backgroundColor: const Color(0xffE5E5E5),
         title: Text(
           state.overview?.location.split(',').first ?? 'Loading...',
           style: theme.textTheme.titleMedium?.copyWith(
@@ -103,7 +104,10 @@ class _MainDashboardBody extends StatelessWidget {
               const DashboardShimmer(),
             if (state.status == DashboardStatus.failure)
               Text(state.error ?? 'Error', style: theme.textTheme.bodyMedium),
-            if (state.overview != null) WeatherOverviewCard(data: state.overview!),
+            if (state.overview != null) GestureDetector(
+              onTap: () => context.push(AppRoutes.weatherDetail),
+              child: WeatherOverviewCard(data: state.overview!),
+            ),
             16.vGap,
             if (state.forecast.isNotEmpty)
               WeatherForecastCard(
@@ -132,9 +136,11 @@ class _MainDashboardBody extends StatelessWidget {
   }
 
   String _formatHour(DateTime dt) {
-    final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-    final ampm = dt.hour < 12 ? 'AM' : 'PM';
-    return '$h $ampm';
+    // dt is already adjusted to target location timezone in our datasource
+    final hour = dt.hour;
+    final h12 = hour % 12 == 0 ? 12 : hour % 12;
+    final ampm = hour < 12 ? 'AM' : 'PM';
+    return '$h12 $ampm';
   }
 
   String _formatForecastTitle(DashboardState state) {

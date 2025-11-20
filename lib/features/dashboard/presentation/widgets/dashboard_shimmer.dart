@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:weatherapp/core/extensions/spacing_extensions.dart';
 
 class DashboardShimmer extends StatelessWidget {
@@ -10,8 +10,8 @@ class DashboardShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Shimmer.fromColors(
-      baseColor: cs.surfaceVariant.withAlpha(120),
-      highlightColor: cs.surfaceVariant.withAlpha(40),
+      baseColor: cs.surfaceContainerHigh.withAlpha(120),
+      highlightColor: cs.surfaceContainerHigh.withAlpha(40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

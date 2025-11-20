@@ -12,5 +12,10 @@ class AppImages {
   static const cloudy = '$_base/cloudy_w.png';
   static const partialyCloudy = '$_base/partlycloudy.png';
   static const partialyRain = '$_base/partlyrain.png';
-static const filter = '$_base/filter.png';
+  static const filter = '$_base/filter.png';
+  static const tips = '$_base/tip.png';
+  static const fahrenheit = '$_base/frhenhit.png';
+  static const pressure = '$_base/pressure.png';
+  static const uvindex = '$_base/uvindex.png';
+  static const humidity = '$_base/hum.png';
 }

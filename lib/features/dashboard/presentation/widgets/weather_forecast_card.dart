@@ -87,7 +87,7 @@ class WeatherForecastCard extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: items.length,
-              separatorBuilder: (_, __) => SizedBox(width: 14.w),
+              separatorBuilder: (_, _) => SizedBox(width: 14.w),
               itemBuilder: (context, index) {
                 final item = items[index];
                 final icon = WeatherIconMapper.fromCondition(item.condition);

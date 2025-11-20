@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weatherapp/core/network/dio_client.dart';
 import 'package:weatherapp/core/storage/prefs.dart';
-import 'package:weatherapp/features/dashboard/data/models/weather_overview_model.dart';
 import 'package:weatherapp/features/dashboard/data/models/forecast_entry_model.dart';
+import 'package:weatherapp/features/dashboard/data/models/weather_overview_model.dart';
 
 abstract class DashboardRemoteDataSource {
   Future<WeatherOverviewModel> fetchOverviewFromApi();
@@ -99,7 +99,10 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
       final body = resp.data as Map<String, dynamic>;
       final list = (body['list'] as List?) ?? const [];
-      return list.map((e) => ForecastEntryModel.fromJson(e as Map<String, dynamic>)).toList();
+      final tzOffset = (body['city']?['timezone'] as int?) ?? 0; // seconds offset from UTC
+      return list
+          .map((e) => ForecastEntryModel.fromJson(e as Map<String, dynamic>, timezoneOffsetSeconds: tzOffset))
+          .toList();
     } on DioException catch (e) {
       final code = e.response?.statusCode;
       final message = e.response?.data is Map

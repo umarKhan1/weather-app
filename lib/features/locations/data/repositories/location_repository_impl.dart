@@ -10,21 +10,53 @@ class LocationRepositoryImpl implements LocationRepository {
 
   @override
   Future<List<LocationResult>> search(String query) async {
-    final raw = await remote.searchRaw(query);
-    return raw.map((e) {
-      final parts = <String>[];
+    // Use OpenWeather Geo Direct API
+    final raw = await remote.searchGeoDirect(query, limit: 10);
+
+    // Map to domain entities
+    final baseResults = raw.map((e) {
       final name = (e['name']?.toString() ?? '').trim();
-      final admin1 = (e['admin1']?.toString() ?? '').trim();
       final country = (e['country']?.toString() ?? '').trim();
-      if (name.isNotEmpty) parts.add(name);
-      if (admin1.isNotEmpty) parts.add(admin1);
-      if (country.isNotEmpty) parts.add(country);
+      final state = (e['state']?.toString() ?? '').trim();
+      final lat = (e['lat'] as num).toDouble();
+      final lon = (e['lon'] as num).toDouble();
+      final subtitle = [
+        if (state.isNotEmpty) state,
+        if (country.isNotEmpty) country,
+      ].join(', ');
       return LocationResult(
-        name: parts.join(', '),
-        lat: (e['latitude'] as num).toDouble(),
-        lon: (e['longitude'] as num).toDouble(),
+        name: name,
+        lat: lat,
+        lon: lon,
+        subtitle: subtitle.isEmpty ? null : subtitle,
       );
     }).toList();
+
+    // Fetch condition codes in parallel
+    final futures = baseResults.map((r) async {
+      try {
+        final code = await remote.fetchConditionCode(lat: r.lat, lon: r.lon);
+        return code;
+      } catch (_) {
+        return null;
+      }
+    }).toList();
+
+    final codes = await Future.wait(futures);
+
+    final results = <LocationResult>[];
+    for (var i = 0; i < baseResults.length; i++) {
+      final r = baseResults[i];
+      results.add(LocationResult(
+        name: r.name,
+        lat: r.lat,
+        lon: r.lon,
+        subtitle: r.subtitle,
+        conditionCode: codes[i],
+      ));
+    }
+
+    return results;
   }
 
   @override

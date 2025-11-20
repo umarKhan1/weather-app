@@ -68,6 +68,24 @@ class LocationsMenu extends StatelessWidget {
                   ],
                 ),
               ),
+              12.vGap,
+              InkWell(
+                onTap: () async {
+                  controller?.hideDrawer();
+                  await Future<void>.delayed(const Duration(milliseconds: 120));
+                  if (context.mounted) {
+                    // Switch back to device GPS location; this will persist the coords via DI callback
+                    await context.read<DashboardCubit>().load(refreshLocation: true);
+                  }
+                },
+                child: Row(
+                  children: [
+                    const Icon(Icons.my_location, color: Color(0xFFFFF176)),
+                    10.hGap,
+                    Text('Use Current Location', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: const Color(0xFFFFF176), fontWeight: FontWeight.w800)),
+                  ],
+                ),
+              ),
               16.vGap,
               Expanded(
                 child: BlocBuilder<SavedLocationsCubit, SavedLocationsState>(
@@ -78,10 +96,17 @@ class LocationsMenu extends StatelessWidget {
                         final loc = items[i];
                         return InkWell(
                           onTap: () async {
+                            // Persist selection (saves lat/lon + keeps it in saved list)
                             await context.read<SaveLocationSelection>()(loc);
+                            // Refresh the saved locations list (in case of dedupe/order changes)
+                            if (context.mounted) {
+                              context.read<SavedLocationsCubit>().load();
+                            }
+                            // Close the drawer for UX then reload dashboard using persisted coords
                             controller?.hideDrawer();
                             if (context.mounted) {
-                              context.read<DashboardCubit>().load();
+                              await Future<void>.delayed(const Duration(milliseconds: 120));
+                              context.read<DashboardCubit>().load(refreshLocation: false);
                             }
                           },
                           child: Padding(

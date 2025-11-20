@@ -1,23 +1,23 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weatherapp/core/location/location_service.dart';
+import 'package:weatherapp/core/network/dio_client.dart';
+import 'package:weatherapp/core/storage/prefs.dart';
 import 'package:weatherapp/features/dashboard/data/datasources/dashboard_local_datasource.dart';
+import 'package:weatherapp/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
 import 'package:weatherapp/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:weatherapp/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:weatherapp/features/dashboard/domain/usecases/get_news.dart';
+import 'package:weatherapp/features/dashboard/domain/usecases/get_weather_forecast.dart';
 import 'package:weatherapp/features/dashboard/domain/usecases/get_weather_overview.dart';
 import 'package:weatherapp/features/dashboard/presentation/cubit/dashboard_cubit.dart';
-import 'package:weatherapp/core/location/location_service.dart';
-import 'package:weatherapp/core/storage/prefs.dart';
-import 'package:weatherapp/core/network/dio_client.dart';
-import 'package:weatherapp/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
-import 'package:weatherapp/features/dashboard/domain/usecases/get_weather_forecast.dart';
 import 'package:weatherapp/features/locations/data/datasources/location_remote_datasource.dart';
 import 'package:weatherapp/features/locations/data/repositories/location_repository_impl.dart';
 import 'package:weatherapp/features/locations/domain/repositories/location_repository.dart';
 import 'package:weatherapp/features/locations/domain/usecases/save_location_selection.dart';
 import 'package:weatherapp/features/locations/domain/usecases/search_locations.dart';
-import 'package:weatherapp/features/locations/presentation/cubit/saved_locations_cubit.dart';
 import 'package:weatherapp/features/locations/presentation/cubit/location_search_cubit.dart';
+import 'package:weatherapp/features/locations/presentation/cubit/saved_locations_cubit.dart';
 
 class AppProviders {
   const AppProviders._();
